@@ -5,26 +5,35 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+
 import com.appclima.model.City
 
 class CitiesViewModel : ViewModel() {
-    var cities = mutableStateListOf<City>()
-        private set
 
-    var isLoading by mutableStateOf(false)
-        private set
+    private val _cities =   MutableStateFlow<List<City>>(emptyList())
+    val cities: StateFlow<List<City>> = _cities
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     fun loadCities() {
-        isLoading = true
-        // Simulación de carga
-        cities.clear()
-        cities.addAll(
-            listOf(
-                City("Buenos Aires"),
-                City("Córdoba"),
-                City("Rosario")
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            // Simulación de carga
+            delay(1000)
+            _cities.value = listOf(
+                City("CABA"),
+                City("La Matanza"),
+                City("Vicente López")
             )
-        )
-        isLoading = false
+
+            _isLoading.value = false
+        }
     }
 }
