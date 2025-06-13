@@ -5,17 +5,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.appclima.presentation.cities.CitiesPage
-import com.appclima.router.Route
+import com.appclima.router.AppRoute
+import com.appclima.router.NavigatorImpl
 
 @Composable
 fun MainPage() {
     val navHostController = rememberNavController()
+
     NavHost(
         navController = navHostController,
-        startDestination = Route.cities.id
+        startDestination = AppRoute.Cities.path
     ) {
-        composable(Route.cities.id) {
-            CitiesPage(navHostController)
+        composable(AppRoute.Cities.path) {
+            CitiesPage(navigator = NavigatorImpl(navHostController))
         }
     }
 }
