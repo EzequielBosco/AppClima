@@ -13,13 +13,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.example.appclima.ui.theme.Pink40
-import com.example.appclima.ui.theme.Pink80
-import com.example.appclima.ui.theme.Purple40
-import com.example.appclima.ui.theme.Purple80
-import com.example.appclima.ui.theme.PurpleGrey40
-import com.example.appclima.ui.theme.PurpleGrey80
-import com.example.appclima.ui.theme.Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -34,7 +27,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun AppClimaTheme(
+fun WeatherAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
