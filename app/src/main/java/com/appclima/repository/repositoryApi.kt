@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
 
 class repositoryApi : Repository {
 
-    private val apiKey = "95e93e4f7a36fc511148468d1774792d"
+    private val apiKey = "48f19d605cdcd4b346cfa04a172739cb"
 
     private val cliente = HttpClient(){
         install(ContentNegotiation){
@@ -49,7 +49,7 @@ class repositoryApi : Repository {
             parameter("appid",apiKey)
         }
         if (respuesta.status == HttpStatusCode.OK){
-            val weather = respuesta.body<City>()
+            val weather = respuesta.body<Weather>()
             return weather
         }else{
             throw Exception()

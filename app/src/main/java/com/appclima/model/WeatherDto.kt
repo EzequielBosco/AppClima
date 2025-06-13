@@ -1,6 +1,6 @@
 package com.appclima.model
 
-data class Weather(
+data class WeatherDto(
     val city: String,
     val temperature: Double,
     val description: String,

@@ -14,14 +14,11 @@ fun AppNavGraph(navController: NavHostController) {
         startDestination = Routes.CitiesScreen.route
     ) {
         composable(Routes.CitiesScreen.route) {
-            CitiesScreen()
+            CitiesScreen(navController)
         }
 
         composable("weather_screen/{cityName}") { backStackEntry ->
-            // Esta línea queda solo si más adelante usás cityName en algún ViewModel(a chequear)
             val cityName = backStackEntry.arguments?.getString("cityName")
-
-            // WeatherScreen no acepta parámetros, así que se llama así
             WeatherScreen()
         }
     }

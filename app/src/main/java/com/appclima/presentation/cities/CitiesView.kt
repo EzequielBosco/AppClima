@@ -1,6 +1,7 @@
 package com.appclima.presentation.cities
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -14,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.appclima.model.City
 import com.istea.appdelclima.presentacion.ciudades.CitiesIntention
 
@@ -22,8 +24,7 @@ import com.istea.appdelclima.presentacion.ciudades.CitiesIntention
 fun CitiesView (
     modifier: Modifier = Modifier,
     state: CitiesStatus,
-    onAction: (CitiesIntention) -> Unit,
-    it: City
+    onAction: (CitiesIntention) -> Unit
 ) {
     var value by remember{ mutableStateOf("") }
 
@@ -38,29 +39,29 @@ fun CitiesView (
         )
         when(state) {
             CitiesStatus.loading -> Text(text = "cargando")
-            is CitiesStatus.error -> Text(text = state.message)
-            is CitiesStatus.result -> ListOfCities(state.cities) {
-                onAction(
-                    CitiesIntention.Select(it)
-                )
+            is CitiesStatus.error -> Text(text = "Error: ${state.message}")
+            is CitiesStatus.result -> ListOfCities(state.cities) { x ->
+                onAction(CitiesIntention.Select(x))
             }
             CitiesStatus.empty -> Text(text = "No hay resultados")
         }
     }
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ListOfCities(cities: List<City>, onSelect: (City)->Unit) {
-        LazyColumn {
-            items(items = cities) {
-                Card(onClick = { onSelect(it) }) {
-                    Text(text = it.name)
-                }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ListOfCities(cities: List<City>, onSelect: (City) -> Unit) {
+    LazyColumn {
+        items(items = cities) { city ->
+            Card(
+                onClick = { onSelect(city) },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = "${city.name}, ${city.country}",
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
     }
-}
-
-@Composable
-fun ListOfCities(x0: List<City>, content: @Composable () -> Unit) {
-    TODO("Not yet implemented")
 }

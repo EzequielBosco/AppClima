@@ -1,19 +1,19 @@
 package com.example.appclima.viewmodel
 
 import com.appclima.model.City
-import com.appclima.viewmodel.CitiesViewModel
+import com.appclima.mock.CitiesViewModelMock
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class CitiesViewModelTest {
+class CitiesViewModelMockTest {
 
-    private lateinit var viewModel: CitiesViewModel
+    private lateinit var viewModel: CitiesViewModelMock
 
     @Before
     fun setup() {
-        viewModel = CitiesViewModel()
+        viewModel = CitiesViewModelMock()
     }
 
     @Test

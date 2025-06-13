@@ -21,6 +21,35 @@ class CitiesViewModel(
     var uiState by mutableStateOf<CitiesStatus>(CitiesStatus.empty)
     var ciudades : List<City> = emptyList()
 
+    init {
+        cargarCiudadesIniciales()
+    }
+
+    private fun cargarCiudadesIniciales() {
+        uiState = CitiesStatus.loading
+        viewModelScope.launch {
+            try {
+                val listaCiudades = mutableListOf<City>()
+                val nombres = listOf("Buenos Aires", "Paris", "New York") // Ciudades precargadas
+
+                for (nombre in nombres) {
+                    val resultado = repository.searchCity(nombre)
+                    if (resultado.isNotEmpty()) {
+                        listaCiudades.add(resultado[0])
+                    }
+                }
+
+                ciudades = listaCiudades.take(3)
+                if (ciudades.isEmpty()) {
+                    uiState = CitiesStatus.empty
+                } else {
+                    uiState = CitiesStatus.result(ciudades)
+                }
+            } catch (ex: Exception) {
+                uiState = CitiesStatus.error(ex.message ?: "Error desconocido")
+            }
+        }
+    }
     fun exec(intention: CitiesIntention){
         when(intention){
             is CitiesIntention.Search -> buscar(nombre = intention.name)
@@ -47,8 +76,8 @@ class CitiesViewModel(
 
     private fun select(city: City){
         val route = Route.weather(
-            lat = city.latitude,
-            lon = city.longitude,
+            lat = city.lat,
+            lon = city.lon,
             name = city.name
         )
         router.navigate(route)
