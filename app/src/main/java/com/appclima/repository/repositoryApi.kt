@@ -1,8 +1,7 @@
-package com.istea.appdelclima.repository
+package com.appclima.repository
 
 import com.appclima.model.City
 import com.appclima.model.Weather
-import com.appclima.repository.Repository
 import com.appclima.repository.models.ForecastDTO
 import com.appclima.repository.models.ListForecast
 import io.ktor.client.HttpClient
