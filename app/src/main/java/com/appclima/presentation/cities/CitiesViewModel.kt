@@ -8,92 +8,73 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.appclima.model.City
 import com.appclima.repository.Repository
-import com.appclima.router.Route
-import com.appclima.router.Router
-import com.istea.appdelclima.presentacion.ciudades.CitiesIntention
+import com.appclima.router.AppRoute
+import com.appclima.router.Navigator
 import kotlinx.coroutines.launch
 
 class CitiesViewModel(
-    val repository: Repository,
-    val router: Router
-) : ViewModel(){
+    private val repository: Repository,
+    private val router: Navigator
+) : ViewModel() {
 
-    var uiState by mutableStateOf<CitiesStatus>(CitiesStatus.empty)
-    var ciudades : List<City> = emptyList()
+    var uiState by mutableStateOf<CitiesState>(CitiesState.Empty)
+    private var cityList: List<City> = emptyList()
 
     init {
-        cargarCiudadesIniciales()
+        loadInitialCities()
     }
 
-    private fun cargarCiudadesIniciales() {
-        uiState = CitiesStatus.loading
+    private fun loadInitialCities() {
+        uiState = CitiesState.Loading
         viewModelScope.launch {
             try {
-                val listaCiudades = mutableListOf<City>()
-                val nombres = listOf("Buenos Aires", "Paris", "New York") // Ciudades precargadas
-
-                for (nombre in nombres) {
-                    val resultado = repository.searchCity(nombre)
-                    if (resultado.isNotEmpty()) {
-                        listaCiudades.add(resultado[0])
-                    }
+                val names = listOf("Buenos Aires", "Paris", "New York")
+                val results = names.mapNotNull {
+                    repository.searchCity(it).firstOrNull()
                 }
 
-                ciudades = listaCiudades.take(3)
-                if (ciudades.isEmpty()) {
-                    uiState = CitiesStatus.empty
-                } else {
-                    uiState = CitiesStatus.result(ciudades)
-                }
-            } catch (ex: Exception) {
-                uiState = CitiesStatus.error(ex.message ?: "Error desconocido")
-            }
-        }
-    }
-    fun exec(intention: CitiesIntention){
-        when(intention){
-            is CitiesIntention.Search -> buscar(nombre = intention.name)
-            is CitiesIntention.Select -> select(city = intention.city)
-        }
-    }
-
-    private fun buscar( nombre: String){
-
-        uiState = CitiesStatus.loading
-        viewModelScope.launch {
-            try {
-                ciudades = repository.searchCity(nombre)
-                if (ciudades.isEmpty()) {
-                    uiState = CitiesStatus.empty
-                } else {
-                    uiState = CitiesStatus.result(ciudades)
-                }
-            } catch (exeption: Exception){
-                uiState = CitiesStatus.error(exeption.message ?: "unknown error")
+                cityList = results.take(3)
+                uiState = if (cityList.isEmpty()) CitiesState.Empty else CitiesState.Result(cityList)
+            } catch (e: Exception) {
+                uiState = CitiesState.Error(e.message ?: "Unknown error")
             }
         }
     }
 
-    private fun select(city: City){
-        val route = Route.weather(
-            lat = city.lat,
-            lon = city.lon,
-            name = city.name
-        )
-        router.navigate(route)
+    fun onIntent(intent: CitiesIntent) {
+        when (intent) {
+            is CitiesIntent.Search -> search(intent.name)
+            is CitiesIntent.Select -> select(intent.city)
+        }
+    }
+
+    private fun search(name: String) {
+        uiState = CitiesState.Loading
+        viewModelScope.launch {
+            try {
+                cityList = repository.searchCity(name)
+                uiState = if (cityList.isEmpty()) CitiesState.Empty else CitiesState.Result(cityList)
+            } catch (e: Exception) {
+                uiState = CitiesState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    private fun select(city: City) {
+        router.navigate(AppRoute.Weather(city.lat, city.lon, city.name))
     }
 }
 
-
 class CitiesViewModelFactory(
     private val repository: Repository,
-    private val router: Router
+    private val router: Navigator
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CitiesViewModel::class.java)) {
-            return CitiesViewModel(repository,router) as T
+        return if (modelClass.isAssignableFrom(CitiesViewModel::class.java)) {
+            CitiesViewModel(repository, router) as T
+        } else {
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

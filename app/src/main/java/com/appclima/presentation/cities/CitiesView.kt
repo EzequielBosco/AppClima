@@ -13,49 +13,45 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appclima.model.City
-import com.istea.appdelclima.presentacion.ciudades.CitiesIntention
-
 
 @Composable
-fun CitiesView (
+fun CitiesView(
     modifier: Modifier = Modifier,
-    state: CitiesStatus,
-    onAction: (CitiesIntention) -> Unit
+    state: CitiesState,
+    onAction: (CitiesIntent) -> Unit
 ) {
-    var value by remember{ mutableStateOf("") }
+    var value by remember { mutableStateOf("") }
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
         TextField(
             value = value,
-            label = { Text(text = "buscar por nombre") },
             onValueChange = {
                 value = it
-                onAction(CitiesIntention.Search(value))
+                onAction(CitiesIntent.Search(value))
             },
+            label = { Text("Search city") }
         )
-        when(state) {
-            CitiesStatus.loading -> Text(text = "cargando")
-            is CitiesStatus.error -> Text(text = "Error: ${state.message}")
-            is CitiesStatus.result -> ListOfCities(state.cities) { x ->
-                onAction(CitiesIntention.Select(x))
-            }
-            CitiesStatus.empty -> Text(text = "No hay resultados")
+
+        when (state) {
+            CitiesState.Loading -> Text("Loading...")
+            is CitiesState.Error -> Text("Error: ${state.message}")
+            is CitiesState.Result -> CityList(state.cities) { onAction(CitiesIntent.Select(it)) }
+            CitiesState.Empty -> Text("No results found")
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListOfCities(cities: List<City>, onSelect: (City) -> Unit) {
+fun CityList(cities: List<City>, onSelect: (City) -> Unit) {
     LazyColumn {
-        items(items = cities) { city ->
+        items(cities) { city ->
             Card(
                 onClick = { onSelect(city) },
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(vertical = 4.dp)
             ) {
                 Text(
                     text = "${city.name}, ${city.country}",
