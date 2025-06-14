@@ -43,6 +43,22 @@ class RepositoryImpl : Repository {
         }
     }
 
+    override suspend fun getCityByCoordinates(lat: Double, lon: Double): City? {
+        val response = client.get("https://api.openweathermap.org/geo/1.0/reverse") {
+            parameter("lat", lat)
+            parameter("lon", lon)
+            parameter("limit", 1)
+            parameter("appid", apiKey)
+        }
+
+        return if (response.status == HttpStatusCode.OK) {
+            val list = response.body<List<GeoCityDTO>>()
+            list.firstOrNull()?.toDomain(0)
+        } else {
+            throw Exception("Reverse geocoding failed with status: ${response.status}")
+        }
+    }
+
     override suspend fun getWeather(lat: Float, lon: Float): Weather {
         val response = client.get("https://api.openweathermap.org/data/2.5/weather") {
             parameter("lat", lat)

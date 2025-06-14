@@ -8,4 +8,5 @@ interface Repository {
     suspend fun searchCity(ciudad: String): List<City>
     suspend fun getWeather(lat: Float, lon: Float): Weather
     suspend fun getForecast(name: String): List<ListForecast>
+    suspend fun getCityByCoordinates(lat: Double, lon: Double): City?
 }

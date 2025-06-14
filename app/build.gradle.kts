@@ -58,6 +58,9 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
 
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
