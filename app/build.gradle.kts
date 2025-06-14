@@ -6,19 +6,17 @@ plugins {
 }
 
 android {
-    namespace = "com.example.appclima"
+    namespace = "com.appclima"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.appclima"
+        applicationId = "com.appclima"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-
     }
 
     buildTypes {
@@ -59,6 +57,11 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.4")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")

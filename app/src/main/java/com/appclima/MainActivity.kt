@@ -3,18 +3,19 @@ package com.appclima
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.compose.rememberNavController
-import com.appclima.presentation.cities.CitiesPage
-import com.example.appclima.ui.theme.AppClimaTheme
+import androidx.activity.enableEdgeToEdge
+import com.appclima.ui.theme.WeatherAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge()
+
         setContent {
-            AppClimaTheme {
-                val navController = rememberNavController()
-                CitiesPage(navHostController = navController)
-                }
+            WeatherAppTheme {
+                MainPage()
             }
         }
     }
+}

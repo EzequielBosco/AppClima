@@ -1,8 +1,8 @@
 package com.appclima.model
 
-data class WeatherDto(
-    val city: String,
+data class ForecastItem(
+    val date: String,
     val temperature: Double,
     val description: String,
-    val iconUrl: String? = null
+    val iconCode: String
 )
