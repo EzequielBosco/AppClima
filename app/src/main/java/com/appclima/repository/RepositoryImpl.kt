@@ -19,7 +19,7 @@ import kotlinx.serialization.json.Json
 
 class RepositoryImpl : Repository {
 
-    private val apiKey = "48f19d605cdcd4b346cfa04a172739cb"
+    private val apiKey = "1fa4d4cc1c418e346211cf58b0422cd2"
 
     private val client = HttpClient {
         install(ContentNegotiation) {

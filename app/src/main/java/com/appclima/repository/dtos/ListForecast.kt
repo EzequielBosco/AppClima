@@ -7,7 +7,8 @@ import java.util.Locale
 
 fun ListForecast.toForecastItem(): ForecastItem {
     val date = Date(this.dt * 1000L)
-    val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+    val dateString = SimpleDateFormat("EEE dd", Locale.getDefault()).format(date)
+
 
     return ForecastItem(
         date = dateString,

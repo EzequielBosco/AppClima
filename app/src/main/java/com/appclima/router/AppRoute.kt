@@ -1,7 +1,5 @@
 package com.appclima.router
 
-import android.net.Uri
-
 sealed interface AppRoute {
     val path: String
 
@@ -14,6 +12,7 @@ sealed interface AppRoute {
         val longitude: Float,
         val city: String
     ) : AppRoute {
-        override val path = "weather?lat=$latitude&lon=$longitude&name=${Uri.encode(city)}"
+        override val path: String = "weather"
     }
 }
+
