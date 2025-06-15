@@ -129,7 +129,7 @@ fun ForecastLineChart(
                 ),
                 modifier = modifier
                     .fillMaxWidth()
-                    .height(290.dp)
+                    .height(250.dp)
             )
         }
     }

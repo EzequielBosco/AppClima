@@ -49,3 +49,5 @@ To make geolocation work on the emulator, follow these steps:
 3. Ejecuta el proyecto en un dispositivo físico o emulador con conexión a internet.
 
 ---
+
+![AppClima demo](assets/demo.gif)

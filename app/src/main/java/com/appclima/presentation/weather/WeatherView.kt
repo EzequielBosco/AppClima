@@ -65,6 +65,11 @@ fun WeatherView(
                     style = MaterialTheme.typography.displayMedium
                 )
 
+                Text(
+                    text = "Humidity: ${weather.humidity}%",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 ForecastChart(forecast = forecast)
