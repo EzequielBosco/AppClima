@@ -11,6 +11,7 @@ fun WeatherDTO.toWeather(): Weather {
         city = name,
         temperature = main.temp.toDouble(),
         description = description,
+        humidity = main.humidity,
         iconUrl = iconUrl
     )
 }

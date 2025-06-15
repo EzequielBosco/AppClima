@@ -61,13 +61,20 @@ fun WeatherView(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "${weather.temperature}°C",
+                    text = String.format(Locale.US, "%.1f°C", weather.temperature),
                     style = MaterialTheme.typography.displayMedium
+                )
+
+                Text(
+                    text = "Humidity: ${weather.humidity}%",
+                    style = MaterialTheme.typography.bodyLarge
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 ForecastChart(forecast = forecast)
+
+                ForecastLineChart(forecast = forecast)
 
                 Spacer(modifier = Modifier.height(32.dp))
 

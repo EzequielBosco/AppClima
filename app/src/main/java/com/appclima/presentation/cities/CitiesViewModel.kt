@@ -103,7 +103,6 @@ class CitiesViewModel(
                         Log.d("CitiesViewModel", "City found: ${city.name}, ${city.country}")
                         selectedCityName = city.name
 
-                        // Usamos el nombre para hacer una búsqueda completa (como si lo escribiera)
                         cityList = repository.searchCity(city.name)
                         uiState = if (cityList.isEmpty()) CitiesState.Empty else CitiesState.Result(cityList)
                     } else {

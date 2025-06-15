@@ -16,7 +16,9 @@ data class ListForecast(
 
 @Serializable
 data class ForecastMain(
-    val temp: Float
+    val temp: Float,
+    val temp_min: Float,
+    val temp_max: Float
 )
 
 @Serializable
