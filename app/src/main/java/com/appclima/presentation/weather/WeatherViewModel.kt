@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.appclima.repository.Repository
 import com.appclima.repository.dtos.toForecastItem
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
@@ -17,7 +19,24 @@ class WeatherViewModel(
     var uiState by mutableStateOf<WeatherState>(WeatherState.Loading)
         private set
 
-    fun loadWeather(lat: Double, lon: Double, cityName: String) {
+    private val _effect = MutableSharedFlow<WeatherEffect>()
+    val effect = _effect.asSharedFlow()
+
+    fun handleIntent(intent: WeatherIntent) {
+        when (intent) {
+            is WeatherIntent.LoadWeather -> {
+                loadWeather(intent.lat, intent.lon, intent.city)
+            }
+
+            is WeatherIntent.ShareForecast -> {
+                viewModelScope.launch {
+                    _effect.emit(WeatherEffect.ShowShareSheet(intent.forecastText))
+                }
+            }
+        }
+    }
+
+    private fun loadWeather(lat: Double, lon: Double, cityName: String) {
         viewModelScope.launch {
             try {
                 val weather = repository.getWeather(lat.toFloat(), lon.toFloat())
@@ -40,7 +59,6 @@ class WeatherViewModel(
             }
         }
     }
-
 }
 
 class WeatherViewModelFactory(
