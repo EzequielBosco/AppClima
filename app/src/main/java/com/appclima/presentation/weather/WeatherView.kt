@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appclima.router.AppRoute
 import com.appclima.router.Navigator
+import java.util.Locale
 
 
 @Composable
@@ -59,7 +60,7 @@ fun WeatherView(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "${weather.temperature}°C",
+                    text = String.format(Locale.US, "%.1f°C", weather.temperature),
                     style = MaterialTheme.typography.displayMedium
                 )
 

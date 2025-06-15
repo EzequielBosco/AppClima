@@ -24,10 +24,10 @@ fun NavGraph(
         }
 
         composable(
-            route = "weather?lat={lat}&lon={lon}&name={name}", // Include arguments in the route string
+            route = "weather?lat={lat}&lon={lon}&name={name}",
             arguments = listOf(
-                navArgument("lat") { type = NavType.FloatType }, // Change to FloatType
-                navArgument("lon") { type = NavType.FloatType }, // Change to FloatType
+                navArgument("lat") { type = NavType.FloatType },
+                navArgument("lon") { type = NavType.FloatType },
                 navArgument("name") { type = NavType.StringType }
             )
         ) { backStackEntry ->
