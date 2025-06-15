@@ -11,3 +11,6 @@ sealed interface WeatherState {
         val forecast: List<ForecastItem>
     ) : WeatherState
 }
+
+
+
