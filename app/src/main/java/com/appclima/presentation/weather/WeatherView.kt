@@ -68,6 +68,8 @@ fun WeatherView(
 
                 ForecastChart(forecast = forecast)
 
+                ForecastLineChart(forecast = forecast)
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Row(

@@ -60,6 +60,10 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // Charts
+    implementation("com.patrykandpatrick.vico:compose:1.13.0")
+    implementation("com.patrykandpatrick.vico:core:1.13.0")
+
     // Location Services
     implementation("com.google.android.gms:play-services-location:21.0.1")
 

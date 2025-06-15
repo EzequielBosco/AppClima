@@ -14,6 +14,8 @@ fun ListForecast.toForecastItem(): ForecastItem {
         date = dateString,
         temperature = main.temp.toDouble(),
         description = weather.firstOrNull()?.description ?: "No data",
-        iconCode = weather.firstOrNull()?.icon ?: ""
+        iconCode = weather.firstOrNull()?.icon ?: "",
+        tempMin = main.temp_min,
+        tempMax = main.temp_max
     )
 }
