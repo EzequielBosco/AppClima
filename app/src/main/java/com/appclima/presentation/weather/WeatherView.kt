@@ -82,7 +82,7 @@ fun WeatherView(
 
                     Button(
                         onClick = {
-                            val forecastText = "The weather in $cityName is ${weather.description}, and the temperature is ${String.format(Locale.US, "%.1f°C", weather.temperature)}°C."
+                            val forecastText = "The weather in $cityName is ${weather.description}, and the temperature is ${String.format(Locale.US, "%.1f", weather.temperature)}°C."
                             onShareClick(forecastText)
                         }
                     ) {
