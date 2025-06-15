@@ -24,7 +24,8 @@ import java.util.Locale
 fun WeatherView(
     state: WeatherState,
     cityName: String,
-    navigator: Navigator
+    navigator: Navigator,
+    onShareClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -83,7 +84,8 @@ fun WeatherView(
 
                     Button(
                         onClick = {
-                            println("Share weather for $cityName")
+                            val forecastText = "The weather in $cityName is ${weather.description}, and the temperature is ${String.format(Locale.US, "%.1f", weather.temperature)}°C."
+                            onShareClick(forecastText)
                         }
                     ) {
                         Text("Share")
@@ -93,3 +95,4 @@ fun WeatherView(
         }
     }
 }
+
