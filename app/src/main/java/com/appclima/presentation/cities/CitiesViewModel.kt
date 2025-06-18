@@ -34,12 +34,12 @@ class CitiesViewModel(
         uiState = CitiesState.Loading
         viewModelScope.launch {
             try {
-                val names = listOf("Buenos Aires", "Paris", "New York")
+                val names = listOf("Buenos Aires", "Paris", "New York", "Berlin", "Madrid")
                 val results = names.mapNotNull {
                     repository.searchCity(it).firstOrNull()
                 }
 
-                cityList = results.take(3)
+                cityList = results.take(5)
                 uiState = if (cityList.isEmpty()) CitiesState.Empty else CitiesState.Result(cityList)
             } catch (e: Exception) {
                 uiState = CitiesState.Error(e.message ?: "Unknown error")

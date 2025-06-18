@@ -60,6 +60,21 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // Live Data
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+    //- Turbine (para testing de Flows)
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("org.assertj:assertj-core:3.25.3") // para asserts mas legibles
+    // Mock
+    testImplementation("io.mockk:mockk:1.13.7")
+    // coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
     // Charts
     implementation("com.patrykandpatrick.vico:compose:1.13.0")
     implementation("com.patrykandpatrick.vico:core:1.13.0")
@@ -82,6 +97,7 @@ dependencies {
 
     // Testing - Turbine (para testing de Flows)
     testImplementation ("app.cash.turbine:turbine:1.0.0")
+    testImplementation("org.slf4j:slf4j-simple:2.0.9")
 
     // Testing - JUnit
     testImplementation ("junit:junit:4.13.2")
