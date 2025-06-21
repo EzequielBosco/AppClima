@@ -60,6 +60,14 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
     // Live Data
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     // Testing
@@ -85,26 +93,7 @@ dependencies {
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
-    // Testing - Turbine (para testing de Flows)
-    testImplementation ("app.cash.turbine:turbine:1.0.0")
     testImplementation("org.slf4j:slf4j-simple:2.0.9")
-
-    // Testing - JUnit
-    testImplementation ("junit:junit:4.13.2")
-
-    // (opcional) MockK si luego usás mocks
-    testImplementation ("io.mockk:mockk:1.13.5")
-
-    // coroutines
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }

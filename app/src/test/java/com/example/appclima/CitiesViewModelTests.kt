@@ -98,7 +98,7 @@ class CitiesViewModelTests {
 
     @Test
     fun returnValid_WhenFoundCity() = runTest {
-        val expectedCity = City(id = 1, name ="Córdoba", country = "AR", lat= 10.0f,  lon = 20.0f)
+        val expectedCity = City(id = 1, name = "Córdoba", country = "AR", lat = 10.0f, lon = 20.0f)
         coEvery { repository.searchCity("cordoba") } returns listOf(expectedCity)
 
         viewModel.onIntent(CitiesIntent.Search("cordoba"))
@@ -177,4 +177,92 @@ class CitiesViewModelTests {
         assertEquals(city.lon, ruta?.longitude)
         assertEquals(city.name, ruta?.city)
     }
+/*
+    @Test // lean 1
+    fun returnError_WhenNavigationFails() = runTest {
+        // Given
+        val city = City(id = 1, name = "Paris", country = "FR", lat = 48.85f, lon = 2.35f)
+        val failingNavigator = object : Navigator {
+            override fun navigate(route: AppRoute) {
+                throw RuntimeException("Navigation failed")
+            }
+        }
+
+        viewModel = CitiesViewModel(repository, failingNavigator, locationProvider)
+
+        // When
+        viewModel.onIntent(CitiesIntent.Select(city))
+        advanceUntilIdle()
+
+        // Then
+        assertTrue(viewModel.uiState is CitiesState.Error)
+        val errorState = viewModel.uiState as CitiesState.Error
+        assertTrue(errorState.message.contains("Navigation failed"))
+    }
+
+*/
+    @Test // lean 2
+    fun returnEmpty_WhenValidCoordinatesButNoCityFound() = runTest {
+        // Given
+        coEvery { locationProvider.getCurrentLocation() } returns Pair(0.0, 0.0)
+        coEvery { repository.getCityByCoordinates(0.0, 0.0) } returns null
+
+        // When
+        viewModel.onIntent(CitiesIntent.UseLocation)
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(CitiesState.Empty, viewModel.uiState)
+    }
+
+    @Test // lean 3
+    fun returnEmpty_WhenCityFoundButSearchReturnsEmpty() = runTest {
+        // Given
+        val dummyCity = City(id = 99, name = "Ghost Town", country = "GT", lat = 0.0f, lon = 0.0f)
+        coEvery { locationProvider.getCurrentLocation() } returns Pair(0.0, 0.0)
+        coEvery { repository.getCityByCoordinates(0.0, 0.0) } returns dummyCity
+        coEvery { repository.searchCity("Ghost Town") } returns emptyList()
+
+        // When
+        viewModel.onIntent(CitiesIntent.UseLocation)
+        advanceUntilIdle()
+
+        // Then
+        assertEquals(CitiesState.Empty, viewModel.uiState)
+    }
+
+    @Test //lean 4
+    fun returnError_WhenLocationProviderFails() = runTest {
+        // Given
+        coEvery { locationProvider.getCurrentLocation() } throws RuntimeException("Location service error")
+
+        // When
+        viewModel.onIntent(CitiesIntent.UseLocation)
+        advanceUntilIdle()
+
+        // Then
+        assertTrue(viewModel.uiState is CitiesState.Error)
+        val error = viewModel.uiState as CitiesState.Error
+        assertTrue(error.message.contains("Location service error"))
+    }
+
+    @Test //lean 5
+    fun returnError_WhenRepositoryGetCityByCoordinatesFails() = runTest {
+        // Given
+        coEvery { locationProvider.getCurrentLocation() } returns Pair(1.0, 2.0)
+        coEvery { repository.getCityByCoordinates(1.0, 2.0) } throws RuntimeException("Repo error")
+
+        // When
+        viewModel.onIntent(CitiesIntent.UseLocation)
+        advanceUntilIdle()
+
+        // Then
+        assertTrue(viewModel.uiState is CitiesState.Error)
+        val error = viewModel.uiState as CitiesState.Error
+        assertTrue(error.message.contains("Repo error"))
+    }
+
+
+
+
 }
