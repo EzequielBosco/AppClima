@@ -218,10 +218,10 @@ class CitiesViewModelTests {
     @Test // lean 3
     fun returnEmpty_WhenCityFoundButSearchReturnsEmpty() = runTest {
         // Given
-        val dummyCity = City(id = 99, name = "Ghost Town", country = "GT", lat = 0.0f, lon = 0.0f)
+        val exampleCity = City(id = 99, name = "Example City", country = "EC", lat = 0.0f, lon = 0.0f)
         coEvery { locationProvider.getCurrentLocation() } returns Pair(0.0, 0.0)
-        coEvery { repository.getCityByCoordinates(0.0, 0.0) } returns dummyCity
-        coEvery { repository.searchCity("Ghost Town") } returns emptyList()
+        coEvery { repository.getCityByCoordinates(0.0, 0.0) } returns exampleCity
+        coEvery { repository.searchCity("Example City") } returns emptyList()
 
         // When
         viewModel.onIntent(CitiesIntent.UseLocation)

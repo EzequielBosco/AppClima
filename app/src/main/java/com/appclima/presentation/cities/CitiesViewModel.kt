@@ -14,6 +14,24 @@ import com.appclima.router.AppRoute
 import com.appclima.router.Navigator
 import kotlinx.coroutines.launch
 
+// ==== UnitTest (Lean) ====
+// Esta clase evita que los unit test utilicen tools de android sdk. (no afecta test integrado)
+object SafeLog {
+    var enabled: Boolean = true
+
+    fun d(tag: String, msg: String) {
+        if (enabled) Log.d(tag, msg)
+    }
+
+    fun e(tag: String, msg: String, throwable: Throwable? = null) {
+        if (enabled) Log.e(tag, msg, throwable)
+    }
+
+    fun w(tag: String, msg: String) {
+        if (enabled) Log.w(tag, msg)
+    }
+}
+
 class CitiesViewModel(
     private val repository: Repository,
     private val router: Navigator,
@@ -77,12 +95,12 @@ class CitiesViewModel(
     private fun select(city: City) {
         selectedCityName = city.name
 
-        Log.d("CitiesViewModel", "Selected city: ${city.name}, ${city.country}")
+        SafeLog.d("CitiesViewModel", "Selected city: ${city.name}, ${city.country}")
 
         try {
             router.navigate(AppRoute.Weather(city.lat, city.lon, city.name))
         } catch (e: Exception) {
-            Log.e("CitiesViewModel", "Navigation failed: ${e.message}", e)
+            SafeLog.e("CitiesViewModel", "Navigation failed: ${e.message}", e)
             uiState = CitiesState.Error("Error navigating to weather screen: ${e.message}")
         }
     }
@@ -91,35 +109,34 @@ class CitiesViewModel(
         uiState = CitiesState.Loading
         viewModelScope.launch {
             try {
-                Log.d("CitiesViewModel", "Requesting location from provider...")
+                SafeLog.d("CitiesViewModel", "Requesting location from provider...")
                 val location = locationProvider.getCurrentLocation()
 
                 if (location != null) {
                     val (lat, lon) = location
-                    Log.d("CitiesViewModel", "Got location: lat=$lat, lon=$lon")
+                    SafeLog.d("CitiesViewModel", "Got location: lat=$lat, lon=$lon")
 
                     val city = repository.getCityByCoordinates(lat, lon)
                     if (city != null) {
-                        Log.d("CitiesViewModel", "City found: ${city.name}, ${city.country}")
+                        SafeLog.d("CitiesViewModel", "City found: ${city.name}, ${city.country}")
                         selectedCityName = city.name
 
                         cityList = repository.searchCity(city.name)
                         uiState = if (cityList.isEmpty()) CitiesState.Empty else CitiesState.Result(cityList)
                     } else {
-                        Log.w("CitiesViewModel", "No city found for coordinates")
+                        SafeLog.w("CitiesViewModel", "No city found for coordinates")
                         uiState = CitiesState.Empty
                     }
                 } else {
-                    Log.w("CitiesViewModel", "Location is null")
+                    SafeLog.w("CitiesViewModel", "Location is null")
                     uiState = CitiesState.Error("Location not available")
                 }
             } catch (e: Exception) {
-                Log.e("CitiesViewModel", "Error retrieving location: ${e.message}", e)
+                SafeLog.e("CitiesViewModel", "Error retrieving location: ${e.message}", e)
                 uiState = CitiesState.Error("Error retrieving location: ${e.message}")
             }
         }
     }
-
 }
 
 class CitiesViewModelFactory(

@@ -9,13 +9,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
 import com.appclima.presentation.cities.CitiesIntent
 import com.appclima.presentation.cities.CitiesState
 import com.appclima.presentation.cities.CitiesViewModel
+import com.appclima.presentation.cities.SafeLog
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -32,10 +32,12 @@ class CitiesViewModelUnitTest {
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
+        SafeLog.enabled = false // desactiva los loggs para evitar error en JVM
         fakeRepository = FakeRepository()
         fakeNavigator = FakeNavigator()
         fakeLocationProvider = FakeLocationProvider()
         viewModel = CitiesViewModel(fakeRepository, fakeNavigator, fakeLocationProvider)
+
     }
 
     @After
@@ -46,18 +48,18 @@ class CitiesViewModelUnitTest {
     @Test
     fun `search with valid city name returns result`() = runTest {
         // given
-        val city = City(1, "Volga", "DE", 1f, 1f)
+        val city = City(1, "Minsk", "BY", 1f, 1f)
         fakeRepository.searchResults = listOf(city)
 
         // when
-        viewModel.onIntent(CitiesIntent.Search("Volga"))
+        viewModel.onIntent(CitiesIntent.Search("Minsk"))
         advanceUntilIdle()
 
         // then
         assertTrue(viewModel.uiState is CitiesState.Result)
         val result = (viewModel.uiState as CitiesState.Result)
         assertEquals(1, result.cities.size)
-        assertEquals("Volga", result.cities.first().name)
+        assertEquals("Minsk", result.cities.first().name)
     }
 
     @Test
@@ -82,99 +84,99 @@ class CitiesViewModelUnitTest {
         // then
         assertTrue(viewModel.uiState is CitiesState.Error)
     }
-/*
-    @Test
-    fun `select city triggers navigation`() = runTest {
-        // given
-        val city = City(1, "Madrid", "ES", 1f, 1f)
 
-        // when
-        viewModel.onIntent(CitiesIntent.Select(city))
-        advanceUntilIdle()
+        @Test // 3
+        fun `select city triggers navigation`() = runTest {
+            // given
+            val city = City(1, "Lol", "LO", 1f, 1f)
 
-        // then
-        val route = fakeNavigator.lastRoute as? AppRoute.Weather
-        assertNotNull(route)
-        assertEquals(city.name, route?.city)
-        assertEquals(city.lat, route?.latitude)
-        assertEquals(city.lon, route?.longitude)
-    }
+            // when
+            viewModel.onIntent(CitiesIntent.Select(city))
+            advanceUntilIdle()
 
-    @Test
-    fun `select city handles navigation error`() = runTest {
-        // given
-        val city = City(1, "Madrid", "ES", 1f, 1f)
-        fakeNavigator.throwOnNavigate = true
+            // then
+            val route = fakeNavigator.lastRoute as? AppRoute.Weather
+            assertNotNull(route)
+            assertEquals(city.name, route?.city)
+            assertEquals(city.lat, route?.latitude)
+            assertEquals(city.lon, route?.longitude)
+        }
 
-        // when
-        viewModel.onIntent(CitiesIntent.Select(city))
-        advanceUntilIdle()
+        @Test
+        fun `select city handles navigation error`() = runTest {
+            // given
+            val city = City(1, "Zaragoza", "ES", 1f, 1f)
+            fakeNavigator.throwOnNavigate = true
 
-        // then
-        assertTrue(viewModel.uiState is CitiesState.Error)
-        assertTrue((viewModel.uiState as CitiesState.Error).message.contains("Error navigating"))
-    }
+            // when
+            viewModel.onIntent(CitiesIntent.Select(city))
+            advanceUntilIdle()
 
-    @Test
-    fun `use location returns matching city`() = runTest {
-        // given
-        val city = City(1, "Buenos Aires", "AR", -34f, -58f)
-        fakeLocationProvider.location = Pair(-34.0, -58.0)
-        fakeRepository.cityByCoords = city
-        fakeRepository.searchResults = listOf(city)
+            // then
+            assertTrue(viewModel.uiState is CitiesState.Error)
+            assertTrue((viewModel.uiState as CitiesState.Error).message.contains("Error navigating"))
+        }
 
-        // when
-        viewModel.onIntent(CitiesIntent.UseLocation)
-        advanceUntilIdle()
+            @Test
+            fun `use location returns matching city`() = runTest {
+                // given
+                val city = City(1, "Buenos Aires", "AR", -34f, -58f)
+                fakeLocationProvider.location = Pair(-34.0, -58.0)
+                fakeRepository.cityByCoords = city
+                fakeRepository.searchResults = listOf(city)
 
-        // then
-        assertTrue(viewModel.uiState is CitiesState.Result)
-        val result = (viewModel.uiState as CitiesState.Result)
-        assertEquals("Buenos Aires", result.cities.first().name)
-    }
+                // when
+                viewModel.onIntent(CitiesIntent.UseLocation)
+                advanceUntilIdle()
 
-    @Test
-    fun `use location returns error if null`() = runTest {
-        // given
-        fakeLocationProvider.location = null
+                // then
+                assertTrue(viewModel.uiState is CitiesState.Result)
+                val result = (viewModel.uiState as CitiesState.Result)
+                assertEquals("Buenos Aires", result.cities.first().name)
+            }
 
-        // when
-        viewModel.onIntent(CitiesIntent.UseLocation)
-        advanceUntilIdle()
+                @Test
+                fun `use location returns error if null`() = runTest {
+                    // given
+                    fakeLocationProvider.location = null
 
-        // then
-        assertTrue(viewModel.uiState is CitiesState.Error)
-        assertEquals("Location not available", (viewModel.uiState as CitiesState.Error).message)
-    }
+                    // when
+                    viewModel.onIntent(CitiesIntent.UseLocation)
+                    advanceUntilIdle()
 
-    @Test
-    fun `use location returns empty when no city found`() = runTest {
-        // given
-        fakeLocationProvider.location = Pair(0.0, 0.0)
-        fakeRepository.cityByCoords = null
+                    // then
+                    assertTrue(viewModel.uiState is CitiesState.Error)
+                    assertEquals("Location not available", (viewModel.uiState as CitiesState.Error).message)
+                }
 
-        // when
-        viewModel.onIntent(CitiesIntent.UseLocation)
-        advanceUntilIdle()
+                    @Test
+                    fun `use location returns empty when no city found`() = runTest {
+                        // given
+                        fakeLocationProvider.location = Pair(0.0, 0.0)
+                        fakeRepository.cityByCoords = null
 
-        // then
-        assertTrue(viewModel.uiState is CitiesState.Empty)
-    }
+                        // when
+                        viewModel.onIntent(CitiesIntent.UseLocation)
+                        advanceUntilIdle()
 
-    @Test
-    fun `use location throws exception returns error`() = runTest {
-        // given
-        fakeLocationProvider.throwOnRequest = true
+                        // then
+                        assertTrue(viewModel.uiState is CitiesState.Empty)
+                    }
 
-        // when
-        viewModel.onIntent(CitiesIntent.UseLocation)
-        advanceUntilIdle()
+                        @Test
+                        fun `use location throws exception returns error`() = runTest {
+                            // given
+                            fakeLocationProvider.throwOnRequest = true
 
-        // then
-        assertTrue(viewModel.uiState is CitiesState.Error)
-        assertTrue((viewModel.uiState as CitiesState.Error).message.contains("Error retrieving location"))
-    }
-*/
+                            // when
+                            viewModel.onIntent(CitiesIntent.UseLocation)
+                            advanceUntilIdle()
+
+                            // then
+                            assertTrue(viewModel.uiState is CitiesState.Error)
+                            assertTrue((viewModel.uiState as CitiesState.Error).message.contains("Error retrieving location"))
+                        }
+
     // ==== Fakes ====
 
     private class FakeRepository : Repository {
