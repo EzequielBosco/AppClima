@@ -97,11 +97,13 @@ class CitiesViewModel(
 
         SafeLog.d("CitiesViewModel", "Selected city: ${city.name}, ${city.country}")
 
-        try {
-            router.navigate(AppRoute.Weather(city.lat, city.lon, city.name))
-        } catch (e: Exception) {
-            SafeLog.e("CitiesViewModel", "Navigation failed: ${e.message}", e)
-            uiState = CitiesState.Error("Error navigating to weather screen: ${e.message}")
+        viewModelScope.launch {
+            try {
+                router.navigate(AppRoute.Weather(city.lat, city.lon, city.name))
+            } catch (e: Exception) {
+                SafeLog.e("CitiesViewModel", "Navigation failed: ${e.message}", e)
+                uiState = CitiesState.Error("Error navigating to weather screen: ${e.message}")
+            }
         }
     }
 

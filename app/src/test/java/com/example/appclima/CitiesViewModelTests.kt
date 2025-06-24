@@ -13,8 +13,8 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
@@ -160,8 +160,8 @@ class CitiesViewModelTests {
 
         var rutaNavegada: AppRoute? = null
         val fakeNavigator = object : Navigator {
-            override fun navigate(route: AppRoute) {
-                rutaNavegada = route
+            override fun navigate(to: AppRoute) {
+                rutaNavegada = to
             }
         }
 
@@ -177,13 +177,13 @@ class CitiesViewModelTests {
         assertEquals(city.lon, ruta?.longitude)
         assertEquals(city.name, ruta?.city)
     }
-/*
+
     @Test // lean 1
     fun returnError_WhenNavigationFails() = runTest {
         // Given
         val city = City(id = 1, name = "Paris", country = "FR", lat = 48.85f, lon = 2.35f)
         val failingNavigator = object : Navigator {
-            override fun navigate(route: AppRoute) {
+            override fun navigate(to: AppRoute) {
                 throw RuntimeException("Navigation failed")
             }
         }
@@ -200,7 +200,7 @@ class CitiesViewModelTests {
         assertTrue(errorState.message.contains("Navigation failed"))
     }
 
-*/
+
     @Test // lean 2
     fun returnEmpty_WhenValidCoordinatesButNoCityFound() = runTest {
         // Given

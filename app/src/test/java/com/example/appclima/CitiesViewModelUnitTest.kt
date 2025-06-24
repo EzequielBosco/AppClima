@@ -16,8 +16,8 @@ import com.appclima.presentation.cities.CitiesIntent
 import com.appclima.presentation.cities.CitiesState
 import com.appclima.presentation.cities.CitiesViewModel
 import com.appclima.presentation.cities.SafeLog
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -184,7 +184,7 @@ class CitiesViewModelUnitTest {
         var throwOnSearch = false
         var cityByCoords: City? = null
 
-        override suspend fun searchCity(cityName: String): List<City> {
+        override suspend fun searchCity(ciudad: String): List<City> {
             if (throwOnSearch) throw RuntimeException("Search failed")
             return searchResults
         }
@@ -195,16 +195,16 @@ class CitiesViewModelUnitTest {
 
         override suspend fun getWeather(lat: Float, lon: Float) = TODO("Not used in this ViewModel")
 
-        override suspend fun getForecast(cityName: String) = emptyList<com.appclima.repository.dtos.ListForecast>()
+        override suspend fun getForecast(name: String) = emptyList<com.appclima.repository.dtos.ListForecast>()
     }
 
     private class FakeNavigator : Navigator {
         var lastRoute: AppRoute? = null
         var throwOnNavigate = false
 
-        override fun navigate(route: AppRoute) {
+        override fun navigate(to: AppRoute) {
             if (throwOnNavigate) throw RuntimeException("Navigation error")
-            lastRoute = route
+            lastRoute = to
         }
     }
 
